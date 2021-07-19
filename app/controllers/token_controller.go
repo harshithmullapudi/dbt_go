@@ -2,6 +2,7 @@ package controllers
 
 import (
 	"dbt_go/pkg/utils"
+
 	"github.com/gofiber/fiber/v2"
 )
 
