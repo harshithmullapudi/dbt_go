@@ -5,9 +5,13 @@ import (
 	"dbt_go/pkg/middleware"
 	"dbt_go/pkg/routes"
 	"dbt_go/pkg/utils"
+	"dbt_go/platform/database"
+	"dbt_go/platform/migrations"
+
 	"github.com/gofiber/fiber/v2"
 
-	_ "dbt_go/docs"                       // load API Docs files (Swagger)
+	_ "dbt_go/docs" // load API Docs files (Swagger)
+
 	_ "github.com/joho/godotenv/autoload" // load .env file automatically
 )
 
@@ -29,6 +33,10 @@ func main() {
 
 	// Define a new Fiber app with config.
 	app := fiber.New(config)
+
+	// Datebase
+	database.PostgreSQLConnection()
+	migrations.Migrate()
 
 	// Middlewares.
 	middleware.FiberMiddleware(app) // Register Fiber's middleware for app.

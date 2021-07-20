@@ -1,15 +1,18 @@
 package models
 
 import (
-	"time"
-
 	"github.com/google/uuid"
+	"gorm.io/gorm"
 )
 
 // Project struct to describe project object.
 type Project struct {
-	ID        uuid.UUID `db:"id" json:"id" validate:"required,uuid"`
-	CreatedAt time.Time `db:"created_at" json:"created_at"`
-	UpdatedAt time.Time `db:"updated_at" json:"updated_at"`
-	Title     string    `db:"title" json:"title" validate:"required,lte=255"`
+	gorm.Model
+	UUID  uuid.UUID `json:"uuid" gorm:"not null"`
+	Title string    `json:"title" validate:"required,lte=255"`
+}
+
+type ProjectSerializer struct {
+	Title string    `json:"title"`
+	UUID  uuid.UUID `json:"uuid"`
 }

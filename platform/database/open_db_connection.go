@@ -1,20 +1,22 @@
 package database
 
-// // Queries struct for collect all app queries.
-// type Queries struct {
-// 	*queries.BookQueries // load queries from Book model
-// }
+import "dbt_go/app/queries"
 
-// // OpenDBConnection func for opening database connection.
-// func OpenDBConnection() (*Queries, error) {
-// 	// Define a new PostgreSQL connection.
-// 	db, err := PostgreSQLConnection()
-// 	if err != nil {
-// 		return nil, err
-// 	}
+// Queries struct for collect all app queries.
+type Queries struct {
+	*queries.ProjectQueries // load queries from Book model
+}
 
-// 	return &Queries{
-// 		// Set queries from models:
-// 		BookQueries: &queries.BookQueries{DB: db}, // from Book model
-// 	}, nil
-// }
+// OpenDBConnection func for opening database connection.
+func OpenDBConnection() (*Queries, error) {
+	// Define a new PostgreSQL connection.
+	db, err := PostgreSQLConnection()
+	if err != nil {
+		return nil, err
+	}
+
+	return &Queries{
+		// Set queries from models:
+		ProjectQueries: &queries.ProjectQueries{DB: db}, // from Book model
+	}, nil
+}

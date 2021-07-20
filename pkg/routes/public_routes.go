@@ -11,7 +11,10 @@ func PublicRoutes(a *fiber.App) {
 	// Create routes group.
 	route := a.Group("/api/v1")
 
-	// Routes for GET method:
+	// Projects routes
+	route.Get("/projects", controllers.GetProjects)
+	route.Post("/projects/create", controllers.CreateProject)
 
+	// Routes for GET method:
 	route.Get("/token/new", controllers.GetNewAccessToken) // create a new access tokens
 }

@@ -2,37 +2,33 @@ package database
 
 import (
 	"fmt"
-	"os"
-	"strconv"
-	"time"
 
-	"github.com/jmoiron/sqlx"
+	"dbt_go/pkg/utils"
 
-	_ "github.com/jackc/pgx/v4/stdlib" // load pgx driver for PostgreSQL
+	"gorm.io/driver/postgres"
+	"gorm.io/gorm"
+)
+
+var (
+	DBCon *gorm.DB
 )
 
 // PostgreSQLConnection func for connection to PostgreSQL database.
-func PostgreSQLConnection() (*sqlx.DB, error) {
+func PostgreSQLConnection() (*gorm.DB, error) {
 	// Define database connection settings.
-	maxConn, _ := strconv.Atoi(os.Getenv("DB_MAX_CONNECTIONS"))
-	maxIdleConn, _ := strconv.Atoi(os.Getenv("DB_MAX_IDLE_CONNECTIONS"))
-	maxLifetimeConn, _ := strconv.Atoi(os.Getenv("DB_MAX_LIFETIME_CONNECTIONS"))
 
-	// Define database connection for PostgreSQL.
-	db, err := sqlx.Connect("pgx", os.Getenv("DB_SERVER_URL"))
+	// Build PostgreSQL connection URL.
+	postgresConnURL, err := utils.ConnectionURLBuilder("postgres")
 	if err != nil {
-		return nil, fmt.Errorf("error, not connected to database, %w", err)
+		return nil, err
 	}
 
-	// Set database connection settings.
-	db.SetMaxOpenConns(maxConn)                           // the default is 0 (unlimited)
-	db.SetMaxIdleConns(maxIdleConn)                       // defaultMaxIdleConns = 2
-	db.SetConnMaxLifetime(time.Duration(maxLifetimeConn)) // 0, connections are reused forever
-
-	// Try to ping database.
-	if err := db.Ping(); err != nil {
-		defer db.Close() // close database connection
-		return nil, fmt.Errorf("error, not sent ping to database, %w", err)
+	// Define database connection for PostgreSQL.
+	dsn := postgresConnURL
+	db, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	DBCon = db
+	if err != nil {
+		return nil, fmt.Errorf("error, not connected to database, %w", err)
 	}
 
 	return db, nil
